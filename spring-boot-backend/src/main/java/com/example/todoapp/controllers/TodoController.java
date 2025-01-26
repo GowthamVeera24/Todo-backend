@@ -1,6 +1,7 @@
 package com.example.todoapp.controllers;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
+
 import com.example.todoapp.models.Todo;
 import com.example.todoapp.repositories.TodoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,26 +18,25 @@ public class TodoController {
     @Autowired
     TodoRepository todoRepository;
 
-    @GetMapping("/todos")
+    @GetMapping("/getting")
     public List<Todo> getAllTodos() {
         Sort sortByCreatedAtDesc = Sort.by(Sort.Direction.DESC, "createdAt");
         return todoRepository.findAll(sortByCreatedAtDesc);
     }
 
-    @PostMapping("/todos")
+    @PostMapping("/add")
     public Todo createTodo(@Valid @RequestBody Todo todo) {
-        todo.setCompleted(false);
         return todoRepository.save(todo);
     }
 
-    @GetMapping(value="/todos/{id}")
+    @GetMapping(value="/getone/{id}")
     public ResponseEntity<Todo> getTodoById(@PathVariable("id") String id) {
         return todoRepository.findById(id)
                 .map(todo -> ResponseEntity.ok().body(todo))
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping(value="/todos/{id}")
+    @PutMapping(value="/update/{id}")
     public ResponseEntity<Todo> updateTodo(@PathVariable("id") String id,
                                            @Valid @RequestBody Todo todo) {
         return todoRepository.findById(id)
@@ -48,7 +48,7 @@ public class TodoController {
                 }).orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping(value="/todos/{id}")
+    @DeleteMapping(value="/remove/{id}")
     public ResponseEntity<?> deleteTodo(@PathVariable("id") String id) {
         return todoRepository.findById(id)
                 .map(todo -> {
